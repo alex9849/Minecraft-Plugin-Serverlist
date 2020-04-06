@@ -1,25 +1,28 @@
 package net.alex9849.web.endpoints;
 
 import net.alex9849.web.exception.ForbiddenException;
+import net.alex9849.web.model.PluginInstallationDTO;
+import net.alex9849.web.service.PluginInstallationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/v1")
 public class Endpoint {
 
-    @RequestMapping(value = "sendstats", method = RequestMethod.POST)
-    public UUID sendStats(HttpServletRequest request) throws ForbiddenException {
-        if(!Objects.equals(request.getHeader("User-Agent"), "Analytic Plugin")) {
+    @Autowired
+    PluginInstallationService pls;
+
+    @RequestMapping(value = "sendstats", method = RequestMethod.PUT)
+    public String sendStats(HttpServletRequest request, @RequestBody() PluginInstallationDTO piDto,
+                          @RequestParam(required = false, defaultValue = "false") boolean startup) throws ForbiddenException {
+        /*if(!Objects.equals(request.getHeader("User-Agent"), "Analytic Plugin")) {
             throw new ForbiddenException();
-        }
-        return UUID.randomUUID();
+        }*/
+        return pls.processStats(piDto, startup).getUuid();
     }
 
 }

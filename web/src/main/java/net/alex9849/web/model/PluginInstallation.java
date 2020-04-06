@@ -3,14 +3,13 @@ package net.alex9849.web.model;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@XmlRootElement
+@Entity
+@Table(name = "installations")
 public class PluginInstallation {
 
     @Id
