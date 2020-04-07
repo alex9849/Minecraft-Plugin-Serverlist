@@ -33,8 +33,8 @@ public class PluginInstallationService {
     public PluginInstallationDTO processStats(PluginInstallationDTO dto, boolean isStartup) {
         UUID uuid = null;
         PluginInstallation pli = new PluginInstallation();
-        if(dto.getUuid() != null) {
-            uuid = UUID.fromString(dto.getUuid());
+        if(dto.getInstallId() != null) {
+            uuid = UUID.fromString(dto.getInstallId());
             pli = repo.findById(uuid.toString())
                     .orElse(new PluginInstallation());
         }

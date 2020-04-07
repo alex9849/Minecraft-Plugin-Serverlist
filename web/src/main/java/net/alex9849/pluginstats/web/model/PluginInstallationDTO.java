@@ -1,14 +1,13 @@
 package net.alex9849.pluginstats.web.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.Map;
 
 @XmlRootElement
 public class PluginInstallationDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String uuid;
+    private String installId;
     private int serverPort;
     private String plugin;
     private boolean onlineMode;
@@ -18,13 +17,14 @@ public class PluginInstallationDTO implements Serializable {
     private String pingIp;
     private String confIp;
     private int playercount;
+    private Map<String, String> options;
 
-    public String getUuid() {
-        return uuid;
+    public String getInstallId() {
+        return installId;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setInstallId(String installId) {
+        this.installId = installId;
     }
 
     public int getServerPort() {
@@ -91,32 +91,19 @@ public class PluginInstallationDTO implements Serializable {
         this.confIp = confIp;
     }
 
-    public Integer getPlayercount() {
+    public int getPlayercount() {
         return playercount;
     }
 
-    public void setPlayercount(Integer playercount) {
+    public void setPlayercount(int playercount) {
         this.playercount = playercount;
     }
 
-    public class OptionDTO {
-        private String option;
-        private String value;
+    public Map<String, String> getOptions() {
+        return options;
+    }
 
-        public String getOption() {
-            return option;
-        }
-
-        public void setOption(String option) {
-            this.option = option;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
+    public void setOptions(Map<String, String> options) {
+        this.options = options;
     }
 }

@@ -1,13 +1,12 @@
 package net.alex9849.pluginstats.web.model;
 
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 @Entity
@@ -15,8 +14,8 @@ import java.util.UUID;
 public class PluginInstallation {
 
     @Id
-    @Column(name = "id", columnDefinition = "varchar(36)")
-    private String uuid;
+    @Column(name = "installId", columnDefinition = "varchar(36)")
+    private String installId;
 
     @Column(name = "serverPort", columnDefinition = "integer")
     private int serverPort;
@@ -57,19 +56,22 @@ public class PluginInstallation {
     @Column(name = "playercount", columnDefinition = "integer not null DEFAULT 0")
     private int playercount;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "installId")
-    private Set<Option> options;
+
+    @ElementCollection()
+    @JoinTable(name="options", joinColumns=@JoinColumn(name="installId"))
+    @MapKeyColumn(name="optionKey", columnDefinition = "varchar(60)")
+    @Column(name="optionValue")
+    private Map<String, String> options;
 
     @PrePersist
     public void prePersist() {
-        if(getUuid() == null) {
-            this.uuid = UUID.randomUUID().toString();
+        if(getInstallId() == null) {
+            this.installId = UUID.randomUUID().toString();
         }
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getInstallId() {
+        return installId;
     }
 
     public int getServerPort() {
@@ -168,43 +170,11 @@ public class PluginInstallation {
         this.playercount = playercount;
     }
 
-    public Set<Option> getOptions() {
+    public Map<String, String> getOptions() {
         return options;
     }
 
-    public void setOptions(Set<Option> options) {
+    public void setOptions(Map<String, String> options) {
         this.options = options;
-    }
-
-    @Entity
-    @Table(name = "options")
-    public static class Option {
-        @Embeddable
-        public static class OptionPK implements Serializable {
-            @ManyToOne
-            @JoinColumn(name = "installId")
-            private PluginInstallation pi;
-
-            @Column(name = "optionKey", columnDefinition = "varchar(50)")
-            private String optionKey;
-        }
-
-        @EmbeddedId
-        private OptionPK optionPK;
-
-        @Column(name = "optionValue", columnDefinition = "varchar(100) not null")
-        private String optionValue;
-
-        public String getOptionKey() {
-            return optionPK.optionKey;
-        }
-
-        public String getOptionValue() {
-            return optionValue;
-        }
-
-        public void setOptionValue(String optionValue) {
-            this.optionValue = optionValue;
-        }
     }
 }

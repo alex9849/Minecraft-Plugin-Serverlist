@@ -67,9 +67,9 @@ public class Endpoint {
         }
 
         piDto.setPingIp(pingIp);
-        String sendId = piDto.getUuid();
+        String sendId = piDto.getInstallId();
 
-        UUID uuid = UUID.fromString(pls.processStats(piDto, startup).getUuid());
+        UUID uuid = UUID.fromString(pls.processStats(piDto, startup).getInstallId());
         Map<String, Object> returnMap = new HashMap<>();
 
         if(!Objects.equals(sendId, uuid.toString())) {
