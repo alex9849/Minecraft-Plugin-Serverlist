@@ -1,4 +1,4 @@
-package net.alex9849.web.model;
+package net.alex9849.pluginstats.web.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;

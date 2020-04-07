@@ -1,4 +1,4 @@
-package net.alex9849.web;
+package net.alex9849.pluginstats.web;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

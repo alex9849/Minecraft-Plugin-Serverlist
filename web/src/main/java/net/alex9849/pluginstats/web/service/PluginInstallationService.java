@@ -1,8 +1,8 @@
-package net.alex9849.web.service;
+package net.alex9849.pluginstats.web.service;
 
-import net.alex9849.web.db.PluginInstallationRepo;
-import net.alex9849.web.model.PluginInstallation;
-import net.alex9849.web.model.PluginInstallationDTO;
+import net.alex9849.pluginstats.web.db.PluginInstallationRepo;
+import net.alex9849.pluginstats.web.model.PluginInstallation;
+import net.alex9849.pluginstats.web.model.PluginInstallationDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

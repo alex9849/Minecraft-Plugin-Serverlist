@@ -1,8 +1,8 @@
-package net.alex9849.web.endpoints;
+package net.alex9849.pluginstats.web.endpoints;
 
-import net.alex9849.web.exception.ForbiddenException;
-import net.alex9849.web.model.PluginInstallationDTO;
-import net.alex9849.web.service.PluginInstallationService;
+import net.alex9849.pluginstats.web.exception.ForbiddenException;
+import net.alex9849.pluginstats.web.model.PluginInstallationDTO;
+import net.alex9849.pluginstats.web.service.PluginInstallationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

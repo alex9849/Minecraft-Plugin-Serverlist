@@ -1,6 +1,6 @@
-package net.alex9849.web.db;
+package net.alex9849.pluginstats.web.db;
 
-import net.alex9849.web.model.PluginInstallation;
+import net.alex9849.pluginstats.web.model.PluginInstallation;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

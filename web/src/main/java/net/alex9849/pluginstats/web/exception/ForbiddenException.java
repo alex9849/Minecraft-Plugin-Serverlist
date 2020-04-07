@@ -1,4 +1,4 @@
-package net.alex9849.web.exception;
+package net.alex9849.pluginstats.web.exception;
 
 public class ForbiddenException extends RuntimeException {
 
