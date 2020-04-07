@@ -52,8 +52,8 @@ public class PluginInstallation {
     @Generated(value = GenerationTime.INSERT)
     private Timestamp lastPing;
 
-    @Column(name = "playercount", columnDefinition = "integer")
-    private Integer playercount;
+    @Column(name = "playercount", columnDefinition = "integer not null DEFAULT 0")
+    private int playercount;
 
     @PrePersist
     public void prePersist() {

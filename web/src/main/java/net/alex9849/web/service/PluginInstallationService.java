@@ -8,13 +8,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 @Service
 public class PluginInstallationService {
+    private static final long SET_PLAYER_TO_ZERO_AFTER_S = 5 * 60;
 
     @Autowired
     private PluginInstallationRepo repo;
+
+    public PluginInstallationService() {
+        Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                repo.setPlayerCountToZero(new Timestamp(System.currentTimeMillis() - SET_PLAYER_TO_ZERO_AFTER_S));
+            }
+        }, 10 * 1000, SET_PLAYER_TO_ZERO_AFTER_S * 1000);
+    }
 
 
     public PluginInstallationDTO processStats(PluginInstallationDTO dto, boolean isStartup) {

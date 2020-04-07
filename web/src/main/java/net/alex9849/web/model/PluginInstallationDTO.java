@@ -16,7 +16,7 @@ public class PluginInstallationDTO implements Serializable {
     private String modt;
     private String pingIp;
     private String confIp;
-    private Integer playercount;
+    private int playercount;
 
     public String getUuid() {
         return uuid;
