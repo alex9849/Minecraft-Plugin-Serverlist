@@ -1,8 +1,9 @@
 package net.alex9849.pluginstats.web.model;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 @XmlRootElement
 public class PluginInstallationDTO implements Serializable {
@@ -96,5 +97,26 @@ public class PluginInstallationDTO implements Serializable {
 
     public void setPlayercount(Integer playercount) {
         this.playercount = playercount;
+    }
+
+    public class OptionDTO {
+        private String option;
+        private String value;
+
+        public String getOption() {
+            return option;
+        }
+
+        public void setOption(String option) {
+            this.option = option;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
     }
 }
