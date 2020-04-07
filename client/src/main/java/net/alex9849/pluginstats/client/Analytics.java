@@ -103,13 +103,13 @@ public class Analytics {
         data.put("serverVersion", Bukkit.getVersion());
         data.put("serverPort", Bukkit.getPort());
         data.put("modt", Bukkit.getServer().getMotd());
-        data.put("serverIp", Bukkit.getIp());
+        data.put("confIp", Bukkit.getIp());
         data.put("onlinePlayers", Bukkit.getOnlinePlayers().size());
         data.put("onlineMode", Bukkit.getOnlineMode());
-        data.put("pluginName", this.plugin.getName());
+        data.put("plugin", this.plugin.getName());
         data.put("pluginVersion", this.plugin.getDescription().getVersion());
         if(this.additionalDataGetter != null) {
-            data.put("additionalData", this.additionalDataGetter.getData());
+            data.put("options", this.additionalDataGetter.getData());
         }
         if(installId != null) {
             data.put("installId", installId);
