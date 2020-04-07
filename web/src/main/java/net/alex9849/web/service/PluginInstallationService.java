@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 public class PluginInstallationService {
-    private static final long SET_PLAYER_TO_ZERO_AFTER_S = 5 * 60;
+    private static final long SET_PLAYER_TO_ZERO_AFTER_MS = 10 * 60 * 1000;
 
     @Autowired
     private PluginInstallationRepo repo;
@@ -24,9 +24,9 @@ public class PluginInstallationService {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                repo.setPlayerCountToZero(new Timestamp(System.currentTimeMillis() - SET_PLAYER_TO_ZERO_AFTER_S));
+                repo.setPlayerCountToZero(new Timestamp(System.currentTimeMillis() - SET_PLAYER_TO_ZERO_AFTER_MS));
             }
-        }, 10 * 1000, SET_PLAYER_TO_ZERO_AFTER_S * 1000);
+        }, 10 * 1000, 2 * 60 * 1000);
     }
 
 
