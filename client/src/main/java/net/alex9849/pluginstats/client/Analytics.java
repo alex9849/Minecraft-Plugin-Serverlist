@@ -18,20 +18,36 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Analytics {
-    private final File confFile;
-    private final YamlConfiguration config;
-    private Plugin plugin;
-    private DataGetter additionalDataGetter;
-
-    Analytics(Plugin plugin) {
-        this(plugin, null);
+    static {
+        final String defaultPackage = new String(
+                new byte[]{'n', 'e', 't', '.',
+                        'a', 'l', 'e', 'x', '9', '8', '4', '9', '.',
+                        'p', 'l', 'u', 'g', 'i', 'n', 's', 't', 'a', 't', 's', '.',
+                        'c', 'l', 'i', 'e', 'n', 't'});
+        final String examplePackage = new String(new byte[]{'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
+        // We want to make sure nobody just copy & pastes the example and use the wrong package names
+        if (Analytics.class.getPackage().getName().equals(defaultPackage) || Analytics.class.getPackage().getName().equals(examplePackage)) {
+            throw new IllegalStateException("Analytics class has not been relocated correctly!");
+        }
     }
 
-    Analytics(Plugin plugin, DataGetter additionalDataGetter) {
+    private final String apiPath = "/api/v1";
+    private final URL serverUrl;
+    private DataGetter additionalDataGetter;
+    private final YamlConfiguration config;
+    private final File confFile;
+    private Plugin plugin;
+
+    Analytics(Plugin plugin, URL serverUrl) {
+        this(plugin, serverUrl, null);
+    }
+
+    Analytics(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
         this.additionalDataGetter = additionalDataGetter;
+        this.serverUrl = serverUrl;
         this.plugin = plugin;
         this.confFile = new File(plugin.getDataFolder() + "/analytics.yml");
         this.config = YamlConfiguration.loadConfiguration(this.confFile);
@@ -43,7 +59,7 @@ public class Analytics {
                     "to motivate myself to continue to develop this plugin. If you don''t want that \n" +
                     "just set \"enabled\" to false. All collected data will be deleted automatically, \n" +
                     "after 2 weeks. Alternatively you can delete your data manually by pasting your \n" +
-                    "installId under this link: https://mcplug.alex9849.net/unregister\n" +
+                    "installId under this link: " + this.serverUrl + "/unregister\n" +
                     "If you don''t see an installId in this file, no data has been sent. Thanks for using this plugin!");
             try {
                 this.config.save(confFile);
@@ -102,7 +118,7 @@ public class Analytics {
     }
 
     private synchronized void submitData() throws IOException, ParseException, ExecutionException, InterruptedException {
-        final String databaseUrl = "http://localhost:8080/web_war/sendstats";
+        final String databaseUrl = this.serverUrl + this.apiPath + "/sendstats";
         Future<JSONObject> sendDataFuture = Bukkit.getScheduler().callSyncMethod(plugin, this::getData);
         JSONObject sendData = sendDataFuture.get();
 
