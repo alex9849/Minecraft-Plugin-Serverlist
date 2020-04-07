@@ -38,11 +38,11 @@ public class Analytics {
     private final File confFile;
     private Plugin plugin;
 
-    Analytics(Plugin plugin, URL serverUrl) {
+    public Analytics(Plugin plugin, URL serverUrl) {
         this(plugin, serverUrl, null);
     }
 
-    Analytics(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
+    public Analytics(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
