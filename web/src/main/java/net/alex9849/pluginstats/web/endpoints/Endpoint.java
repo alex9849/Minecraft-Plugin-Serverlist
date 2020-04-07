@@ -14,7 +14,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequestMapping(path = "/api/v1")
 public class Endpoint {
     private Map<String, Integer> newIdsPerIp = new ConcurrentHashMap<>();
-    private static final int MAX_NEW_UUIDS_PER_IP_PER_HOUR = 10;
+    private static int MAX_NEW_UUIDS_PER_IP_PER_HOUR;
+
+    static {
+        if(System.getenv("MAX_NEW_REGISTRATIONS_PER_IP_PER_HOUR") == null) {
+            MAX_NEW_UUIDS_PER_IP_PER_HOUR = 10;
+        } else {
+            MAX_NEW_UUIDS_PER_IP_PER_HOUR = Integer.parseInt(System.getenv("MAX_NEW_REGISTRATIONS_PER_IP_PER_HOUR"));
+        }
+    }
 
     @Autowired
     PluginInstallationService pls;
@@ -69,7 +77,7 @@ public class Endpoint {
             int pingCounter = newIdsPerIp.get(pingIp);
             newIdsPerIp.put(pingIp, ++pingCounter);
         }
-        returnMap.put("installid", uuid);
+        returnMap.put("installId", uuid);
         return returnMap;
     }
 
