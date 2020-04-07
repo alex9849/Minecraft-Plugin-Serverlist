@@ -25,6 +25,7 @@ public class PluginInstallationService {
             @Override
             public void run() {
                 repo.setPlayerCountToZero(new Timestamp(System.currentTimeMillis() - SET_PLAYER_TO_ZERO_AFTER_MS));
+                repo.deleteAllByLastPingBefore(new Timestamp(System.currentTimeMillis() - 14 * 24 * 60 * 60 * 1000));
             }
         }, 10 * 1000, 2 * 60 * 1000);
     }

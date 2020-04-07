@@ -16,4 +16,7 @@ public interface PluginInstallationRepo extends CrudRepository<PluginInstallatio
     @Query(value = "UPDATE PluginInstallation i SET i.playercount = 0 WHERE i.lastPing < :lastPingOlderThan")
     void setPlayerCountToZero(@Param("lastPingOlderThan") Timestamp lastPingOlderThan);
 
+    @Transactional
+    void deleteAllByLastPingBefore(Timestamp olderThan);
+
 }
