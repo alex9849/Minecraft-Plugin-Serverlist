@@ -7,7 +7,7 @@ jdk:
 
 deploy:
   provider: script
-  script: bash ./travis/docker_deploy.sh
+  script: bash ./.travis/docker_deploy.sh
   on:
     tags: true
   overwrite: true
