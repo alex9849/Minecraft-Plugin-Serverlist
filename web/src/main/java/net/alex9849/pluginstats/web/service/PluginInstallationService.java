@@ -49,7 +49,7 @@ public class PluginInstallationService {
     }
 
     public void deleteInstallation(String installId) {
-        repo.deleteById(installId);
+        repo.findById(installId).ifPresent(repo::delete);
     }
 
 

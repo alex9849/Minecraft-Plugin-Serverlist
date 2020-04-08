@@ -56,11 +56,11 @@ public class Analytics {
             this.config.addDefault("enabled", true);
             this.config.options().header("This plugin collects some data like the online players, \n" +
                     "ip address, port, etc. so I can visit your server. To see what you do with my plugin helps \n" +
-                    "to motivate myself to continue to develop this plugin. If you don't want that \n" +
-                    "just set \"enabled\" to false. All collected data will be deleted automatically, \n" +
-                    "after 2 weeks. Alternatively you can delete your data manually by pasting your \n" +
-                    "installId under this link: " + this.serverUrl + "/unregister\n" +
-                    "If you don't see an installId in this file, no data has been sent. Thanks for using this plugin!");
+                    "me to motivate myself to continue to develop this plugin. If you don't want that \n" +
+                    "just set \"enabled\" to false. All collected data will be deleted automatically \n" +
+                    "after a restart, after the plugin hasn't been started for 2 weeks. If you don't see \n" +
+                    "an installId in this file, no data has been sent, or all collected data has been deleted.\n" +
+                    "Thanks for using this plugin!");
             try {
                 this.config.save(confFile);
             } catch (IOException e) {
@@ -86,6 +86,9 @@ public class Analytics {
                     connection.setRequestProperty("Content-Type", "application/json");
                     connection.setRequestMethod("DELETE");
                     connection.connect();
+                    if(connection.getResponseCode() != 200) {
+                        return;
+                    }
                     this.config.set("installId", null);
                     Future<Boolean> done =  Bukkit.getScheduler().callSyncMethod(this.plugin, () -> {
                         this.config.save(this.confFile);

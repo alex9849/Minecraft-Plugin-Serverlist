@@ -82,7 +82,7 @@ public class Endpoint {
     }
 
     @RequestMapping(value = "unregister/{installId}", method = RequestMethod.DELETE)
-    public void unregister(HttpServletRequest request, @RequestParam("installId") UUID installId) {
+    public void unregister(HttpServletRequest request, @PathVariable("installId") UUID installId) {
         if(!Objects.equals(request.getHeader("User-Agent"), "Analytic Plugin")) {
             throw new ForbiddenException();
         }
