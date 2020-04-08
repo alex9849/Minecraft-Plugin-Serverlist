@@ -96,9 +96,7 @@ public class Analytics {
                     });
                     done.get();
                 } catch (Exception e) {
-                    //TODO Ignore
                     //Ignore
-                    e.printStackTrace();
                 }
             }
         });
@@ -194,9 +192,7 @@ public class Analytics {
 
                     }
                 } catch (Exception e) {
-                    //TODO Ignore
                     //Ignore
-                    e.printStackTrace();
                 }
             }
         });
