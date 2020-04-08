@@ -9,12 +9,12 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Analytics {
@@ -69,7 +69,36 @@ public class Analytics {
         }
         if(this.config.getBoolean("enabled")) {
             startSubmitting();
+        } else {
+            if (this.config.getString("installId") != null) {
+                unregisterServer(UUID.fromString(this.config.getString("installId")));
+            }
         }
+    }
+
+    private void unregisterServer(UUID uuid) {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            synchronized (Bukkit.getScheduler()) {
+                try {
+                    final String databaseUrl = this.serverUrl + this.apiPath + "/unregister/" + uuid.toString();
+                    HttpURLConnection connection = (HttpURLConnection) new URL(databaseUrl).openConnection();
+                    connection.setRequestProperty("User-Agent", "Analytic Plugin");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestMethod("DELETE");
+                    connection.connect();
+                    this.config.set("installId", null);
+                    Future<Boolean> done =  Bukkit.getScheduler().callSyncMethod(this.plugin, () -> {
+                        this.config.save(this.confFile);
+                        return true;
+                    });
+                    done.get();
+                } catch (Exception e) {
+                    //TODO Ignore
+                    //Ignore
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void startSubmitting() {
@@ -81,17 +110,7 @@ public class Analytics {
                     timer.cancel();
                     return;
                 }
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    Thread sendThread = new Thread(() -> {
-                        try {
-                            submitData();
-                        } catch (Exception e) {
-                            //Ignore
-                            e.printStackTrace();
-                        }
-                    });
-                    sendThread.start();
-                });
+                submitData();
             }
         }, 1000 * 10, 1000 * 60 * 5);
     }
@@ -117,48 +136,67 @@ public class Analytics {
         return data;
     }
 
-    private synchronized void submitData() throws IOException, ParseException, ExecutionException, InterruptedException {
-        final String databaseUrl = this.serverUrl + this.apiPath + "/sendstats";
-        Future<JSONObject> sendDataFuture = Bukkit.getScheduler().callSyncMethod(plugin, this::getData);
-        JSONObject sendData = sendDataFuture.get();
+    /**
+     * DO NOT RUN THIS ON THE MAIN THREAD!
+     * @throws IOException
+     * @throws ParseException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    private void submitData() {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            synchronized(Bukkit.getScheduler()) {
+                try {
+                    final String databaseUrl = this.serverUrl + this.apiPath + "/sendstats";
+                    Future<JSONObject> sendDataFuture = Bukkit.getScheduler().callSyncMethod(plugin, this::getData);
+                    JSONObject sendData = sendDataFuture.get();
+                    String sendDataString = sendData.toJSONString();
 
-        HttpURLConnection connection = (HttpURLConnection) new URL(databaseUrl).openConnection();
-        connection.setRequestProperty("User-Agent", "Analytic Plugin");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Accept", "application/json");
-        connection.setRequestMethod("PUT");
-        connection.setDoOutput(true);
-        PrintStream ps = new PrintStream(connection.getOutputStream());
-        ps.print(sendData.toJSONString());
-        ps.flush();
-        ps.close();
+                    HttpURLConnection connection = (HttpURLConnection) new URL(databaseUrl).openConnection();
+                    connection.setRequestProperty("User-Agent", "Analytic Plugin");
+                    connection.setRequestProperty("Content-Type", "application/json");
+                    connection.setRequestProperty("Accept", "application/json");
+                    connection.setRequestProperty("Content-Length", sendDataString.getBytes().length + "");
+                    connection.setRequestMethod("PUT");
+                    connection.setDoOutput(true);
+                    PrintStream ps = new PrintStream(connection.getOutputStream());
+                    ps.print(sendDataString);
+                    ps.flush();
+                    ps.close();
 
-        InputStream inputStream = connection.getInputStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            sb.append(line);
-        }
-        bufferedReader.close();
+                    InputStream inputStream = connection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    bufferedReader.close();
 
-        if(connection.getResponseCode() != 200) {
-            return;
-        }
-        JSONParser jsonParser = new JSONParser();
-        JSONObject response = (JSONObject) jsonParser.parse(sb.toString());
-        String installId = (String) response.get("installId");
+                    if(connection.getResponseCode() != 200) {
+                        return;
+                    }
+                    JSONParser jsonParser = new JSONParser();
+                    JSONObject response = (JSONObject) jsonParser.parse(sb.toString());
+                    String installId = (String) response.get("installId");
 
-        if(!Objects.equals(this.config.getString("installId"), installId)) {
-            this.config.set("installId", installId);
+                    if(!Objects.equals(this.config.getString("installId"), installId)) {
+                        this.config.set("installId", installId);
 
-            Future<Boolean> done = Bukkit.getScheduler().callSyncMethod(plugin, () -> {
-                this.config.save(this.confFile);
-                return true;
-            });
-            done.get();
+                        Future<Boolean> done = Bukkit.getScheduler().callSyncMethod(plugin, () -> {
+                            this.config.save(this.confFile);
+                            return true;
+                        });
+                        done.get();
 
-        }
+                    }
+                } catch (Exception e) {
+                    //TODO Ignore
+                    //Ignore
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public interface DataGetter {

@@ -48,5 +48,9 @@ public class PluginInstallationService {
         return returnDto;
     }
 
+    public void deleteInstallation(String installId) {
+        repo.deleteById(installId);
+    }
+
 
 }

@@ -81,4 +81,12 @@ public class Endpoint {
         return returnMap;
     }
 
+    @RequestMapping(value = "unregister/{installId}", method = RequestMethod.DELETE)
+    public void unregister(HttpServletRequest request, @RequestParam("installId") UUID installId) {
+        if(!Objects.equals(request.getHeader("User-Agent"), "Analytic Plugin")) {
+            throw new ForbiddenException();
+        }
+        pls.deleteInstallation(installId.toString());
+    }
+
 }
