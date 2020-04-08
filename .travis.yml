@@ -6,7 +6,8 @@ jdk:
   - openjdk8
 
 script:
-  - mvn versions:set -DnewVersion=$TRAVIS_TAG
+  - mvn versions:set -DnewVersion=${TRAVIS_TAG}
+  - mvn versions:commit
   - docker build -t alex9849/mc-pluginstats-server:$TRAVIS_TAG ./web
 
 deploy:
