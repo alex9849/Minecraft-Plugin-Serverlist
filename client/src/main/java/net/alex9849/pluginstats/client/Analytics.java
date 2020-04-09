@@ -136,13 +136,15 @@ public class Analytics {
     private void startSubmitting() {
         this.timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
+            private boolean first = true;
             @Override
             public void run() {
                 if (!plugin.isEnabled()) {
                     timer.cancel();
                     return;
                 }
-                submitData();
+                submitData(first);
+                first = false;
             }
         }, 1000 * 10, 1000 * 60 * 5);
     }
@@ -175,11 +177,11 @@ public class Analytics {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    private void submitData() {
+    private void submitData(boolean isStartup) {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             synchronized(Bukkit.getScheduler()) {
                 try {
-                    final String databaseUrl = this.serverUrl + this.apiPath + "/sendstats";
+                    String databaseUrl = this.serverUrl + this.apiPath + "/sendstats?startup=" + isStartup;
                     Future<JSONObject> sendDataFuture = Bukkit.getScheduler().callSyncMethod(plugin, this::getData);
                     JSONObject sendData = sendDataFuture.get();
                     String sendDataString = sendData.toJSONString();
