@@ -157,7 +157,7 @@ public class Analytics {
         data.put("serverPort", Bukkit.getPort());
         data.put("motd", Bukkit.getServer().getMotd());
         data.put("confIp", Bukkit.getIp());
-        data.put("onlinePlayers", Bukkit.getOnlinePlayers().size());
+        data.put("playercount", Bukkit.getOnlinePlayers().size());
         data.put("onlineMode", Bukkit.getOnlineMode());
         data.put("plugin", this.plugin.getName());
         data.put("pluginVersion", this.plugin.getDescription().getVersion());
