@@ -127,7 +127,7 @@ public class Analytics {
         });
     }
 
-    private void shutdown() {
+    public void shutdown() {
         if(this.timer != null) {
             this.timer.cancel();
         }
