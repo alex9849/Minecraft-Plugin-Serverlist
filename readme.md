@@ -25,6 +25,35 @@ Add the client as a Maven-Dependency: (Use the same version that you use for the
 </dependency>
 ```
 
+The client-classes need to be relocated. The client will not start if you don't do that:
+```
+<plugins>
+  <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>2.4.3</version>
+    <configuration>
+      <relocations>
+        <relocation>
+          <pattern>net.alex9849.pluginstats.client</pattern>
+          <shadedPattern>YOU.NEW.SHADE.PATTERN</shadedPattern>
+        </relocation>
+      </relocations>
+    </configuration>
+    <executions>
+      <execution>
+        <phase>package</phase>
+        <goals>
+          <goal>shade</goal>
+        </goals>
+        <configuration>
+        </configuration>
+      </execution>
+    </executions>
+  </plugin>
+</plugins>
+```
+
 Add this to the onEnable-method of your plugin. Replace YOUR_INSTALLATION_URL with the url of your 
 server-installation. Its recommended run the server behind a proxy with Https.
 You can let the client send additional data to your server by creating a DataGetter and pass
