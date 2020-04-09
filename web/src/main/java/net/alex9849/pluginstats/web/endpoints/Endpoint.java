@@ -63,7 +63,7 @@ public class Endpoint {
         }
         Integer newIdsForThisIp = this.newIdsPerIp.get(pingIp);
         if(newIdsForThisIp != null && newIdsForThisIp > MAX_NEW_UUIDS_PER_IP_PER_HOUR) {
-            throw new ForbiddenException("Too many requests!");
+            throw new ForbiddenException("Too many requests from IP: " + pingIp + "!");
         }
 
         piDto.setPingIp(pingIp);

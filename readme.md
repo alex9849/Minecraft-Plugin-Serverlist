@@ -83,4 +83,5 @@ Docker-Image requires a MySQL database
  - DB_HOST: The database host (required)
  - DB_PORT: The database port (required)
  - MAX_NEW_REGISTRATIONS_PER_IP_PER_HOUR: Max new registrations per hour per ip (spam protect)
+ - LOG_LEVEL: The logging-level. Possible values: trace, debug, info, warn, error, fatal, off
  
