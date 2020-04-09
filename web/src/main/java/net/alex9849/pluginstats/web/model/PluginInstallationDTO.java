@@ -13,7 +13,7 @@ public class PluginInstallationDTO implements Serializable {
     private boolean onlineMode;
     private String pluginVersion;
     private String serverVersion;
-    private String modt;
+    private String motd;
     private String pingIp;
     private String confIp;
     private int playercount;
@@ -67,12 +67,12 @@ public class PluginInstallationDTO implements Serializable {
         this.serverVersion = serverVersion;
     }
 
-    public String getModt() {
-        return modt;
+    public String getMotd() {
+        return motd;
     }
 
-    public void setModt(String modt) {
-        this.modt = modt;
+    public void setMotd(String motd) {
+        this.motd = motd;
     }
 
     public String getPingIp() {

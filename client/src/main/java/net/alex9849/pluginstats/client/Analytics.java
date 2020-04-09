@@ -83,8 +83,8 @@ public class Analytics {
                     "ip address, port, etc. so I can visit your server. To see what you do with my plugin helps \n" +
                     "me to motivate myself to continue to develop this plugin. If you don't want that \n" +
                     "just set \"enabled\" to false. All collected data will be deleted automatically \n" +
-                    "after a restart, after the plugin hasn't been started for 2 weeks. If you don't see \n" +
-                    "an installId in this file, no data has been sent, or all collected data has been deleted.\n" +
+                    "after a restart or after the plugin hasn't been started for 2 weeks. If you don't see \n" +
+                    "an installId in this file, no data has been sent or all collected data has been deleted.\n" +
                     "Thanks for using this plugin!");
             try {
                 this.config.save(confFile);
@@ -155,7 +155,7 @@ public class Analytics {
         String installId = this.config.getString("installId");
         data.put("serverVersion", Bukkit.getVersion());
         data.put("serverPort", Bukkit.getPort());
-        data.put("modt", Bukkit.getServer().getMotd());
+        data.put("motd", Bukkit.getServer().getMotd());
         data.put("confIp", Bukkit.getIp());
         data.put("onlinePlayers", Bukkit.getOnlinePlayers().size());
         data.put("onlineMode", Bukkit.getOnlineMode());

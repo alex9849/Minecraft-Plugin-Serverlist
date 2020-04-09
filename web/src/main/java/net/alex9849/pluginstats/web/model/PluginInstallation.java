@@ -32,8 +32,8 @@ public class PluginInstallation {
     @Column(name = "serverVersion", columnDefinition = "varchar(100)")
     private String serverVersion;
 
-    @Column(name = "modt", columnDefinition = "varchar(1024)")
-    private String modt;
+    @Column(name = "motd", columnDefinition = "varchar(1024)")
+    private String motd;
 
     @Column(name = "pingIp", columnDefinition = "varchar(30)")
     private String pingIp;
@@ -114,12 +114,12 @@ public class PluginInstallation {
         this.serverVersion = serverVersion;
     }
 
-    public String getModt() {
-        return modt;
+    public String getMotd() {
+        return motd;
     }
 
-    public void setModt(String modt) {
-        this.modt = modt;
+    public void setMotd(String modt) {
+        this.motd = modt;
     }
 
     public String getPingIp() {
