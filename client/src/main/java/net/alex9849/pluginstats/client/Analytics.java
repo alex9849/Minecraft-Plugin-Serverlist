@@ -37,12 +37,37 @@ public class Analytics {
     private final YamlConfiguration config;
     private final File confFile;
     private Plugin plugin;
+    private Timer timer = null;
+    private static Analytics instance = null;
 
-    public Analytics(Plugin plugin, URL serverUrl) {
+    /**
+     * @param plugin The plugin that should be tracked.
+     * @param serverUrl The installation-url of the server, where the data should be sent to.
+     * @return a Analytics object. Everytime you create one the old one will be deactivated.
+     */
+    public static Analytics genInstance(Plugin plugin, URL serverUrl) {
+        return genInstance(plugin, serverUrl, null);
+    }
+
+    /**
+     * @param plugin The plugin that should be tracked.
+     * @param serverUrl The installation-url of the server, where the data should be sent to.
+     * @param additionalDataGetter A getter that can be used to submit additional data.
+     * @return a Analytics object. Everytime you create one the old one will be deactivated.
+     */
+    public static Analytics genInstance(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
+        if(instance != null) {
+            instance.shutdown();
+        }
+        instance = new Analytics(plugin, serverUrl, additionalDataGetter);
+        return instance;
+    }
+
+    private Analytics(Plugin plugin, URL serverUrl) {
         this(plugin, serverUrl, null);
     }
 
-    public Analytics(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
+    private Analytics(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
@@ -102,8 +127,14 @@ public class Analytics {
         });
     }
 
+    private void shutdown() {
+        if(this.timer != null) {
+            this.timer.cancel();
+        }
+    }
+
     private void startSubmitting() {
-        final Timer timer = new Timer(true);
+        this.timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
