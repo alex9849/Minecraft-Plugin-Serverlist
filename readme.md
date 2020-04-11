@@ -74,6 +74,7 @@ Use the following docker image:
 
 You need to connect the client with a MySQL-Database. You can pass the login Data to the Server
 via environment variables. If you want to view the stored data, you can use something like PhPMyAdmin.
+The default Webport ist 8080
 
 **Server environment variables:**  
 Docker-Image requires a MySQL database
