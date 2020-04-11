@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 public class PluginInstallationService {
-    private static final long SET_PLAYER_TO_ZERO_AFTER_MS = 10 * 60 * 1000;
+    private static final long SET_PLAYER_TO_ZERO_AFTER_MS = 20 * 60 * 1000;
 
     @Autowired
     private PluginInstallationRepo repo;

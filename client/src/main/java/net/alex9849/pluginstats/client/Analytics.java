@@ -146,7 +146,7 @@ public class Analytics {
                 submitData(first);
                 first = false;
             }
-        }, 1000 * 10, 1000 * 60 * 5);
+        }, 1000 * 10, 1000 * 60 * 10);
     }
 
     private JSONObject getData() {
