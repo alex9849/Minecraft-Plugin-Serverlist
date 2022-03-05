@@ -9,13 +9,9 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Analytics {
@@ -41,7 +37,7 @@ public class Analytics {
     private Timer timer = null;
     private static Analytics instance = null;
     private boolean isRemotePremiumFeaturesEnabled = false;
-    private Runnable onRemotePremiumEnable = null;
+    private Runnable onRemotePremiumCallback = null;
 
     /**
      * @param plugin The plugin that should be tracked.
@@ -58,11 +54,11 @@ public class Analytics {
      * @param additionalDataGetter A getter that can be used to submit additional data.
      * @return a Analytics object. Everytime you create one the old one will be deactivated.
      */
-    public static Analytics genInstance(Plugin plugin, URL serverUrl, Runnable onRemotePremiumEnable, DataGetter additionalDataGetter) {
+    public static Analytics genInstance(Plugin plugin, URL serverUrl, Runnable onRemotePremiumCallback, DataGetter additionalDataGetter) {
         if(instance != null) {
             instance.shutdown();
         }
-        instance = new Analytics(plugin, serverUrl, onRemotePremiumEnable, additionalDataGetter);
+        instance = new Analytics(plugin, serverUrl, onRemotePremiumCallback, additionalDataGetter);
         return instance;
     }
 
@@ -70,14 +66,14 @@ public class Analytics {
         this(plugin, serverUrl, null, null);
     }
 
-    private Analytics(Plugin plugin, URL serverUrl, Runnable onRemotePremiumEnable, DataGetter additionalDataGetter) {
+    private Analytics(Plugin plugin, URL serverUrl, Runnable onRemotePremiumCallback, DataGetter additionalDataGetter) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
         this.additionalDataGetter = additionalDataGetter;
         this.serverUrl = serverUrl;
         this.plugin = plugin;
-        this.onRemotePremiumEnable = onRemotePremiumEnable;
+        this.onRemotePremiumCallback = onRemotePremiumCallback;
         this.confFile = new File(plugin.getDataFolder() + "/analytics.yml");
         this.config = YamlConfiguration.loadConfiguration(this.confFile);
         this.config.options().copyDefaults(true).copyHeader(true);
@@ -150,7 +146,7 @@ public class Analytics {
                 submitData(first);
                 first = false;
             }
-        }, 1000 * 10, 1000 * 60 * 10);
+        }, 1000, 1000 * 60 * 10);
     }
 
     private JSONObject getData() {
@@ -228,8 +224,8 @@ public class Analytics {
                         done.get();
 
                     }
-                    if(enablePremiumFeatures && !this.isRemotePremiumFeaturesEnabled && this.onRemotePremiumEnable != null) {
-                        this.onRemotePremiumEnable.run();
+                    if(enablePremiumFeatures && !this.isRemotePremiumFeaturesEnabled && this.onRemotePremiumCallback != null) {
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, this.onRemotePremiumCallback);
                         this.isRemotePremiumFeaturesEnabled = true;
                     }
                 } catch (Exception e) {
