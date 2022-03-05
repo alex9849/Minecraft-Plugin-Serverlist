@@ -216,7 +216,7 @@ public class Analytics {
                     JSONParser jsonParser = new JSONParser();
                     JSONObject response = (JSONObject) jsonParser.parse(sb.toString());
                     String installId = (String) response.get("installId");
-                    boolean enablePremiumFeatures = (boolean) response.get("remoteEnablePremium");
+                    boolean enablePremiumFeatures = (boolean) response.get("enablePremiumFeatures");
 
                     if(!Objects.equals(this.config.getString("installId"), installId)) {
                         this.config.set("installId", installId);
