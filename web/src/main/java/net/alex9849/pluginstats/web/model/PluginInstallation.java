@@ -56,9 +56,6 @@ public class PluginInstallation {
     @Column(name = "playercount", columnDefinition = "integer not null DEFAULT 0")
     private int playercount;
 
-    @Column(name = "premium", columnDefinition = "boolean not null DEFAULT FALSE")
-    private boolean premium;
-
     @Column(name = "remote_enable_premium", columnDefinition = "boolean not null DEFAULT FALSE")
     private boolean remoteEnablePremium;
 
@@ -94,14 +91,6 @@ public class PluginInstallation {
 
     public void setPlugin(String plugin) {
         this.plugin = plugin;
-    }
-
-    public boolean isPremium() {
-        return premium;
-    }
-
-    public void setPremium(boolean premium) {
-        this.premium = premium;
     }
 
     public boolean isRemoteEnablePremium() {
