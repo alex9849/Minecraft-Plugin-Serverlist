@@ -2,7 +2,8 @@ package net.alex9849.pluginstats.web.service;
 
 import net.alex9849.pluginstats.web.db.PluginInstallationRepo;
 import net.alex9849.pluginstats.web.model.PluginInstallation;
-import net.alex9849.pluginstats.web.model.PluginInstallationDTO;
+import net.alex9849.pluginstats.web.model.request.PluginInstallationDTO;
+import net.alex9849.pluginstats.web.model.response.InstallationResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class PluginInstallationService {
     }
 
 
-    public PluginInstallationDTO processStats(PluginInstallationDTO dto, boolean isStartup) {
+    public InstallationResponse processStats(PluginInstallationDTO dto, boolean isStartup) {
         UUID uuid = null;
         PluginInstallation pli = new PluginInstallation();
         if(dto.getInstallId() != null) {
@@ -41,11 +42,14 @@ public class PluginInstallationService {
         }
         BeanUtils.copyProperties(dto, pli);
         pli.setLastPing(new Timestamp(System.currentTimeMillis()));
-        if(isStartup) pli.setLastStarted(new Timestamp(System.currentTimeMillis()));
+        if(isStartup) {
+            pli.setLastStarted(new Timestamp(System.currentTimeMillis()));
+        }
         pli = repo.save(pli);
-        PluginInstallationDTO returnDto = new PluginInstallationDTO();
-        BeanUtils.copyProperties(pli, returnDto);
-        return returnDto;
+        InstallationResponse responseDto = new InstallationResponse();
+        responseDto.setInstallId(pli.getInstallId());
+        responseDto.setEnablePremiumFeatures(pli.isRemoteEnablePremium());
+        return responseDto;
     }
 
     public void deleteInstallation(String installId) {

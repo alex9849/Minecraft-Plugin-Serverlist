@@ -1,7 +1,8 @@
 package net.alex9849.pluginstats.web.endpoints;
 
 import net.alex9849.pluginstats.web.exception.ForbiddenException;
-import net.alex9849.pluginstats.web.model.PluginInstallationDTO;
+import net.alex9849.pluginstats.web.model.request.PluginInstallationDTO;
+import net.alex9849.pluginstats.web.model.response.InstallationResponse;
 import net.alex9849.pluginstats.web.service.PluginInstallationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,7 @@ public class Endpoint {
     }
 
     @RequestMapping(value = "sendstats", method = RequestMethod.PUT)
-    public Map<String, Object> sendStats(HttpServletRequest request, @RequestBody() PluginInstallationDTO piDto,
+    public InstallationResponse sendStats(HttpServletRequest request, @RequestBody() PluginInstallationDTO piDto,
                                          @RequestParam(required = false, defaultValue = "false") boolean startup) {
         if(!Objects.equals(request.getHeader("User-Agent"), "Analytic Plugin")) {
             throw new ForbiddenException();
@@ -68,17 +69,16 @@ public class Endpoint {
 
         piDto.setPingIp(pingIp);
         String sendId = piDto.getInstallId();
+        InstallationResponse response = pls.processStats(piDto, startup);
 
-        UUID uuid = UUID.fromString(pls.processStats(piDto, startup).getInstallId());
-        Map<String, Object> returnMap = new HashMap<>();
+        UUID uuid = UUID.fromString(response.getInstallId());
 
         if(!Objects.equals(sendId, uuid.toString())) {
             newIdsPerIp.putIfAbsent(pingIp, 1);
             int pingCounter = newIdsPerIp.get(pingIp);
             newIdsPerIp.put(pingIp, ++pingCounter);
         }
-        returnMap.put("installId", uuid);
-        return returnMap;
+        return response;
     }
 
     @RequestMapping(value = "unregister/{installId}", method = RequestMethod.DELETE)

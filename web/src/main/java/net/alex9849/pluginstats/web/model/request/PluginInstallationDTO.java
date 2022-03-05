@@ -1,4 +1,4 @@
-package net.alex9849.pluginstats.web.model;
+package net.alex9849.pluginstats.web.model.request;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
@@ -17,6 +17,7 @@ public class PluginInstallationDTO implements Serializable {
     private String pingIp;
     private String confIp;
     private int playercount;
+    private boolean premium;
     private Map<String, String> options;
 
     public String getInstallId() {
@@ -33,6 +34,14 @@ public class PluginInstallationDTO implements Serializable {
 
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
+    }
+
+    public boolean isPremium() {
+        return premium;
+    }
+
+    public void setPremium(boolean premium) {
+        this.premium = premium;
     }
 
     public String getPlugin() {

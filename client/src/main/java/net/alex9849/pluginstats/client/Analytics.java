@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -39,6 +40,8 @@ public class Analytics {
     private Plugin plugin;
     private Timer timer = null;
     private static Analytics instance = null;
+    private boolean isRemotePremiumFeaturesEnabled = false;
+    private Runnable onRemotePremiumEnable = null;
 
     /**
      * @param plugin The plugin that should be tracked.
@@ -46,7 +49,7 @@ public class Analytics {
      * @return a Analytics object. Everytime you create one the old one will be deactivated.
      */
     public static Analytics genInstance(Plugin plugin, URL serverUrl) {
-        return genInstance(plugin, serverUrl, null);
+        return genInstance(plugin, serverUrl, null, null);
     }
 
     /**
@@ -55,25 +58,26 @@ public class Analytics {
      * @param additionalDataGetter A getter that can be used to submit additional data.
      * @return a Analytics object. Everytime you create one the old one will be deactivated.
      */
-    public static Analytics genInstance(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
+    public static Analytics genInstance(Plugin plugin, URL serverUrl, Runnable onRemotePremiumEnable, DataGetter additionalDataGetter) {
         if(instance != null) {
             instance.shutdown();
         }
-        instance = new Analytics(plugin, serverUrl, additionalDataGetter);
+        instance = new Analytics(plugin, serverUrl, onRemotePremiumEnable, additionalDataGetter);
         return instance;
     }
 
     private Analytics(Plugin plugin, URL serverUrl) {
-        this(plugin, serverUrl, null);
+        this(plugin, serverUrl, null, null);
     }
 
-    private Analytics(Plugin plugin, URL serverUrl, DataGetter additionalDataGetter) {
+    private Analytics(Plugin plugin, URL serverUrl, Runnable onRemotePremiumEnable, DataGetter additionalDataGetter) {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
         this.additionalDataGetter = additionalDataGetter;
         this.serverUrl = serverUrl;
         this.plugin = plugin;
+        this.onRemotePremiumEnable = onRemotePremiumEnable;
         this.confFile = new File(plugin.getDataFolder() + "/analytics.yml");
         this.config = YamlConfiguration.loadConfiguration(this.confFile);
         this.config.options().copyDefaults(true).copyHeader(true);
@@ -171,7 +175,6 @@ public class Analytics {
     }
 
     /**
-     * DO NOT RUN THIS ON THE MAIN THREAD!
      * @throws IOException
      * @throws ParseException
      * @throws ExecutionException
@@ -213,6 +216,7 @@ public class Analytics {
                     JSONParser jsonParser = new JSONParser();
                     JSONObject response = (JSONObject) jsonParser.parse(sb.toString());
                     String installId = (String) response.get("installId");
+                    boolean enablePremiumFeatures = (boolean) response.get("remoteEnablePremium");
 
                     if(!Objects.equals(this.config.getString("installId"), installId)) {
                         this.config.set("installId", installId);
@@ -223,6 +227,10 @@ public class Analytics {
                         });
                         done.get();
 
+                    }
+                    if(enablePremiumFeatures && this.isRemotePremiumFeaturesEnabled && this.onRemotePremiumEnable != null) {
+                        this.onRemotePremiumEnable.run();
+                        this.isRemotePremiumFeaturesEnabled = true;
                     }
                 } catch (Exception e) {
                     //Ignore
