@@ -228,7 +228,7 @@ public class Analytics {
                         done.get();
 
                     }
-                    if(enablePremiumFeatures && this.isRemotePremiumFeaturesEnabled && this.onRemotePremiumEnable != null) {
+                    if(enablePremiumFeatures && !this.isRemotePremiumFeaturesEnabled && this.onRemotePremiumEnable != null) {
                         this.onRemotePremiumEnable.run();
                         this.isRemotePremiumFeaturesEnabled = true;
                     }
