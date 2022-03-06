@@ -67,4 +67,4 @@ jobs:
         run: |
           docker build -t alex9849/mc-pluginstats-server:${GITHUB_REF/refs\/tags\//} ./web
       - name: Push images
-        run: docker push alex9849/pi-cocktailmaker --all-tags
+        run: docker push alex9849/mc-pluginstats-server --all-tags
