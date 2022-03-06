@@ -81,7 +81,8 @@ public class Analytics {
             this.config.addDefault("enabled", true);
             this.config.options().header("This plugin collects some data like the online players, \n" +
                     "ip address, port, etc. so I can visit your server. To see what you do with my plugin helps \n" +
-                    "me to motivate myself to continue to develop this plugin. If you don't want that \n" +
+                    "me to motivate myself to continue to develop this plugin. This system also allows me to enable premium \n" +
+                    "features remotely. (Only enabling not disabling) If you don't want that \n" +
                     "just set \"enabled\" to false. All collected data will be deleted automatically \n" +
                     "after a restart or after the plugin hasn't been started for 2 weeks. If you don't see \n" +
                     "an installId in this file, no data has been sent or all collected data has been deleted.\n" +
