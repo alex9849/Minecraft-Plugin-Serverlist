@@ -34,6 +34,8 @@ jobs:
         run: |
           mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
           mvn versions:commit
+          mvn clean
+          mvn install
       - name: Archive server
         uses: actions/upload-artifact@v2
         with:
