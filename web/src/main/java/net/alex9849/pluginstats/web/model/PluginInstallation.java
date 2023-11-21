@@ -1,8 +1,6 @@
 package net.alex9849.pluginstats.web.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -41,15 +39,12 @@ public class PluginInstallation {
     private String confIp;
 
     @Column(name = "created", columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP")
-    @Generated(value = GenerationTime.INSERT)
     private Timestamp created;
 
     @Column(name = "lastStarted", columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP")
-    @Generated(value = GenerationTime.INSERT)
     private Timestamp lastStarted;
 
     @Column(name = "lastPing", columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP")
-    @Generated(value = GenerationTime.INSERT)
     private Timestamp lastPing;
 
     @Column(name = "playercount", columnDefinition = "integer not null DEFAULT 0")
