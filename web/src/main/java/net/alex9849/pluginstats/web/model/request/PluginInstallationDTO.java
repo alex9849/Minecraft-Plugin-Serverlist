@@ -1,10 +1,8 @@
 package net.alex9849.pluginstats.web.model.request;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Map;
 
-@XmlRootElement
 public class PluginInstallationDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private String installId;

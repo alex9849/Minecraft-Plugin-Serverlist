@@ -1,5 +1,6 @@
 package net.alex9849.pluginstats.web.endpoints;
 
+import jakarta.servlet.http.HttpServletRequest;
 import net.alex9849.pluginstats.web.exception.ForbiddenException;
 import net.alex9849.pluginstats.web.model.request.PluginInstallationDTO;
 import net.alex9849.pluginstats.web.model.response.InstallationResponse;
@@ -7,7 +8,6 @@ import net.alex9849.pluginstats.web.service.PluginInstallationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -51,7 +51,7 @@ public class Endpoint {
 
     @RequestMapping(value = "sendstats", method = RequestMethod.PUT)
     public InstallationResponse sendStats(HttpServletRequest request, @RequestBody() PluginInstallationDTO piDto,
-                                         @RequestParam(required = false, defaultValue = "false") boolean startup) {
+                                          @RequestParam(required = false, defaultValue = "false") boolean startup) {
         if(!Objects.equals(request.getHeader("User-Agent"), "Analytic Plugin")) {
             throw new ForbiddenException();
         }

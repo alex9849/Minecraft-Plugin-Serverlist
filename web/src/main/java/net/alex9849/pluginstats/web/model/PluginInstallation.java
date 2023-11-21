@@ -1,10 +1,9 @@
 package net.alex9849.pluginstats.web.model;
 
-import org.hibernate.annotations.*;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
